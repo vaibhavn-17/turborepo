@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
 
 interface User {
   id: number;
@@ -19,7 +21,11 @@ async function getUser(id: string): Promise<User | null> {
   }
 }
 
-export default async function UserProfile({ params }: { params: { id: string } }) {
+export default async function UserProfile({
+  params,
+}: {
+  params: { id: string };
+}) {
   const user = await getUser(params.id);
 
   if (!user) return notFound();
@@ -28,15 +34,24 @@ export default async function UserProfile({ params }: { params: { id: string } }
     <div className="p-6 bg-gray-100 min-h-screen flex flex-col items-center">
       <h1 className="text-3xl font-bold">{user.name}</h1>
       <p className="text-gray-600">{user.email}</p>
-      
+
       {/* Default avatar if missing */}
-      <img
-        src={user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+      <Image
+        src={
+          user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+        }
         alt="User Avatar"
+        width={128}
+        height={128}
         className="w-32 h-32 rounded-full mt-4 border shadow"
       />
-      
-      <a href="/users" className="mt-6 text-blue-500 hover:underline">← Back to Users</a>
+
+      <Link
+        href="/users"
+        className="mt-6 text-blue-500 hover:underline transition duration-200"
+      >
+        ← Back to Users
+      </Link>
     </div>
   );
 }

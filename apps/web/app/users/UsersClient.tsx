@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useQuery, useMutation, useQueryClient } from "@repo/react-query-config";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@repo/react-query-config";
 import { addUser, deleteUser } from "./actions";
 
 interface User {
@@ -17,7 +21,11 @@ export default function UsersClient({ users }: { users: User[] }) {
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
   // Fetch users
-  const { data: userList = [], isLoading, isError } = useQuery<User[]>({
+  const {
+    data: userList = [],
+    isLoading,
+    isError,
+  } = useQuery<User[]>({
     queryKey: ["users"],
     queryFn: () => Promise.resolve(users),
   });
@@ -26,7 +34,10 @@ export default function UsersClient({ users }: { users: User[] }) {
   const addUserMutation = useMutation({
     mutationFn: (formData: FormData) => addUser(formData),
     onSuccess: (newUser: User) => {
-      queryClient.setQueryData<User[]>(["users"], (oldUsers = []) => [...oldUsers, newUser]);
+      queryClient.setQueryData<User[]>(["users"], (oldUsers = []) => [
+        ...oldUsers,
+        newUser,
+      ]);
       setName("");
     },
   });
@@ -42,7 +53,7 @@ export default function UsersClient({ users }: { users: User[] }) {
       await queryClient.cancelQueries({ queryKey: ["users"] });
       const previousUsers = queryClient.getQueryData<User[]>(["users"]);
       queryClient.setQueryData<User[]>(["users"], (oldUsers = []) =>
-        oldUsers.filter((user) => user.id !== id)
+        oldUsers.filter((user) => user.id !== id),
       );
       return { previousUsers };
     },
@@ -74,14 +85,20 @@ export default function UsersClient({ users }: { users: User[] }) {
           className="border p-2 rounded"
           required
         />
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded" disabled={addUserMutation.isPending}>
+        <button
+          type="submit"
+          className="bg-blue-500 text-white p-2 rounded"
+          disabled={addUserMutation.isPending}
+        >
           {addUserMutation.isPending ? "Adding..." : "Add User"}
         </button>
       </form>
 
       {/* Loading & Error State */}
       {isLoading && <p>Loading users...</p>}
-      {isError && <p className="text-red-500">Error loading users. Please try again.</p>}
+      {isError && (
+        <p className="text-red-500">Error loading users. Please try again.</p>
+      )}
 
       {/* Users List */}
       <ul className="space-y-4 w-full max-w-md">

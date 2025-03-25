@@ -10,7 +10,9 @@ export async function getUsers() {
 }
 
 // Add new user
-export async function addUser(formData: FormData): Promise<{ id: number; name: string }> {
+export async function addUser(
+  formData: FormData,
+): Promise<{ id: number; name: string }> {
   const name = formData.get("name") as string;
 
   const res = await fetch(API_URL, {
@@ -23,7 +25,6 @@ export async function addUser(formData: FormData): Promise<{ id: number; name: s
 
   return res.json();
 }
-
 
 // Delete user
 export async function deleteUser(id: number) {
